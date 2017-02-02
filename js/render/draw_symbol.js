@@ -101,6 +101,7 @@ function drawLayerSymbols(painter, sourceCache, layer, coords, isText, translate
 
         if (!program || bucket.fontstack !== prevFontstack) {
             program = painter.useProgram(isSDF ? 'symbolSDF' : 'symbolIcon', programConfiguration);
+            programConfiguration.setUniforms(gl, program, layer, {zoom: painter.transform.zoom});
 
             setSymbolDrawState(program, painter, isText, isSDF, rotateWithMap, pitchWithMap, bucket.fontstack, size,
                     bucket.iconsNeedLinear, isText ? bucket.adjustedTextSize : bucket.adjustedIconSize, opacity);
