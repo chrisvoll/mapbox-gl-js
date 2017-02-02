@@ -51,7 +51,8 @@ const symbolInterfaces = {
         layoutVertexArrayType: layoutVertexArrayType,
         elementArrayType: elementArrayType,
         paintAttributes: [
-            {property: 'icon-color', type: 'Uint8'}
+            {property: 'icon-color', type: 'Uint8'},
+            {property: 'icon-halo-color', type: 'Uint8'}
         ]
     },
     collisionBox: {
