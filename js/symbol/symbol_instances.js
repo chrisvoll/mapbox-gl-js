@@ -28,7 +28,7 @@ const SymbolInstancesArray = createStructArrayType({
         { type: 'Int16', name: 'anchorPointX' },
         { type: 'Int16', name: 'anchorPointY' },
 
-        // location of feature in the owning SymbolBucket's array of features
+        // the index into the source VectorTile's list of features
         { type: 'Uint16', name: 'featureIndex' },
 
         // Bitmask indicating all available writing modes
