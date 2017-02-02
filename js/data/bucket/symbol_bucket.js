@@ -192,6 +192,12 @@ class SymbolBucket {
             // It's better to place labels on one long line than on many short segments.
             this.features = mergeLines(this.features);
         }
+
+        // set up this mapping to allow for constant-time lookups in place()
+        this.featuresByIndex = {};
+        for (const feature of this.features) {
+            this.featuresByIndex[feature.index] = feature;
+        }
     }
 
     isEmpty() {
@@ -581,7 +587,7 @@ class SymbolBucket {
             segment.primitiveLength += 2;
         }
 
-        const feature = this.features.find(feature => feature.index === featureIndex);
+        const feature = this.featuresByIndex[featureIndex];
         const featureProperties = feature ? feature.properties : {};
         arrays.populatePaintArrays(featureProperties);
     }
