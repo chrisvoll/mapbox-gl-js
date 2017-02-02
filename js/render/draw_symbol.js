@@ -47,8 +47,7 @@ function drawSymbols(painter, sourceCache, layer, coords) {
         layer.paint['icon-halo-width'],
         layer.paint['icon-halo-color'],
         layer.paint['icon-halo-blur'],
-        layer.paint['icon-opacity'],
-        layer.paint['icon-color']
+        layer.paint['icon-opacity']
     );
 
     drawLayerSymbols(painter, sourceCache, layer, coords, true,
@@ -60,8 +59,7 @@ function drawSymbols(painter, sourceCache, layer, coords) {
         layer.paint['text-halo-width'],
         layer.paint['text-halo-color'],
         layer.paint['text-halo-blur'],
-        layer.paint['text-opacity'],
-        layer.paint['text-color']
+        layer.paint['text-opacity']
     );
 
     if (sourceCache.map.showCollisionBoxes) {
@@ -70,7 +68,7 @@ function drawSymbols(painter, sourceCache, layer, coords) {
 }
 
 function drawLayerSymbols(painter, sourceCache, layer, coords, isText, translate, translateAnchor,
-        rotationAlignment, pitchAlignment, size, haloWidth, haloColor, haloBlur, opacity, color) {
+        rotationAlignment, pitchAlignment, size, haloWidth, haloColor, haloBlur, opacity) {
 
     if (!isText && painter.style.sprite && !painter.style.sprite.loaded())
         return;
@@ -114,7 +112,7 @@ function drawLayerSymbols(painter, sourceCache, layer, coords, isText, translate
                 painter.translatePosMatrix(coord.posMatrix, tile, translate, translateAnchor));
 
         drawTileSymbols(program, painter, layer, tile, buffers, isText, isSDF,
-                pitchWithMap, size, haloWidth, haloColor, haloBlur, color);
+                pitchWithMap, size, haloWidth, haloColor, haloBlur);
 
         prevFontstack = bucket.fontstack;
     }
@@ -166,7 +164,7 @@ function setSymbolDrawState(program, painter, isText, isSDF, rotateWithMap, pitc
 }
 
 function drawTileSymbols(program, painter, layer, tile, buffers, isText, isSDF,
-        pitchWithMap, size, haloWidth, haloColor, haloBlur, color) {
+        pitchWithMap, size, haloWidth, haloColor, haloBlur) {
 
     const gl = painter.gl;
     const tr = painter.transform;
