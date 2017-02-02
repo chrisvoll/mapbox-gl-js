@@ -5,6 +5,7 @@ attribute vec2 a_offset;
 attribute vec2 a_texture_pos;
 attribute vec4 a_data;
 
+#pragma mapbox: define lowp vec4 color
 
 // matrix is for the vertex position.
 uniform mat4 u_matrix;
@@ -24,6 +25,8 @@ varying vec2 v_fade_tex;
 varying float v_gamma_scale;
 
 void main() {
+    #pragma mapbox: initialize lowp vec4 color
+
     vec2 a_tex = a_texture_pos.xy;
     mediump float a_labelminzoom = a_data[0];
     mediump vec2 a_zoom = a_data.pq;

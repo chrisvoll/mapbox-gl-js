@@ -46,6 +46,9 @@ class ProgramConfiguration {
         }
         self.PaintVertexArray = createVertexArrayType(self.attributes);
 
+        self._id = layer.id
+        self.layer = layer
+
         return self;
     }
 
@@ -210,7 +213,8 @@ function getPaintAttributeValue(attribute, layer, globalProperties, featurePrope
 }
 
 function normalizePaintAttribute(attribute, layer) {
-    const name = attribute.property.replace(`${layer.type}-`, '').replace(/-/g, '_');
+    const layerTypePrefix = layer.type === 'symbol' ? /text-|icon-/ : `${layer.type}-`;
+    const name = attribute.property.replace(layerTypePrefix, '').replace(/-/g, '_');
     const isColor = layer._paintSpecifications[attribute.property].type === 'color';
 
     return util.extend({

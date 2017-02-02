@@ -96,11 +96,13 @@ function drawLayerSymbols(painter, sourceCache, layer, coords, isText, translate
         if (!bucket) continue;
         const buffers = isText ? bucket.buffers.glyph : bucket.buffers.icon;
         if (!buffers || !buffers.segments.length) continue;
+        const layerData = buffers.layerData[layer.id];
+        const programConfiguration = layerData.programConfiguration;
 
         const isSDF = isText || bucket.sdfIcons;
 
         if (!program || bucket.fontstack !== prevFontstack) {
-            program = painter.useProgram(isSDF ? 'symbolSDF' : 'symbolIcon');
+            program = painter.useProgram(isSDF ? 'symbolSDF' : 'symbolIcon', programConfiguration);
 
             setSymbolDrawState(program, painter, isText, isSDF, rotateWithMap, pitchWithMap, bucket.fontstack, size,
                     bucket.iconsNeedLinear, isText ? bucket.adjustedTextSize : bucket.adjustedIconSize, opacity);
@@ -184,14 +186,12 @@ function drawTileSymbols(program, painter, layer, tile, buffers, isText, isSDF,
 
         if (haloWidth) { // Draw halo underneath the text.
             gl.uniform1f(program.u_gamma, (haloBlur * blurOffset / sdfPx + gamma) / gammaScale);
-            gl.uniform4fv(program.u_color, haloColor);
             gl.uniform1f(program.u_buffer, (haloOffset - haloWidth / fontScale) / sdfPx);
 
             drawSymbolElements(buffers, layer, gl, program);
         }
 
         gl.uniform1f(program.u_gamma, gamma / gammaScale);
-        gl.uniform4fv(program.u_color, color);
         gl.uniform1f(program.u_buffer, (256 - 64) / 256);
     }
 
@@ -199,8 +199,11 @@ function drawTileSymbols(program, painter, layer, tile, buffers, isText, isSDF,
 }
 
 function drawSymbolElements(buffers, layer, gl, program) {
+    const layerData = buffers.layerData[layer.id];
+    const paintVertexBuffer = layerData && layerData.paintVertexBuffer;
+
     for (const segment of buffers.segments) {
-        segment.vaos[layer.id].bind(gl, program, buffers.layoutVertexBuffer, buffers.elementBuffer, null, segment.vertexOffset);
+        segment.vaos[layer.id].bind(gl, program, buffers.layoutVertexBuffer, buffers.elementBuffer, paintVertexBuffer, segment.vertexOffset);
         gl.drawElements(gl.TRIANGLES, segment.primitiveLength * 3, gl.UNSIGNED_SHORT, segment.primitiveOffset * 3 * 2);
     }
 }

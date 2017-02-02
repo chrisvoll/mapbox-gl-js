@@ -28,8 +28,8 @@ const SymbolInstancesArray = createStructArrayType({
         { type: 'Int16', name: 'anchorPointX' },
         { type: 'Int16', name: 'anchorPointY' },
 
-        // index -- not sure if we need this -@mollymerp
-        { type: 'Int8', name: 'index' },
+        // location of feature in the owning SymbolBucket's array of features
+        { type: 'Uint16', name: 'featureIndex' },
 
         // Bitmask indicating all available writing modes
         { type: 'Uint8', name: 'writingModes' }

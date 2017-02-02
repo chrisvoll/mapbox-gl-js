@@ -41,11 +41,17 @@ const layoutVertexArrayType = createVertexArrayType([
 const symbolInterfaces = {
     glyph: {
         layoutVertexArrayType: layoutVertexArrayType,
-        elementArrayType: elementArrayType
+        elementArrayType: elementArrayType,
+        paintAttributes: [
+            {property: 'text-color', type: 'Uint8'}
+        ]
     },
     icon: {
         layoutVertexArrayType: layoutVertexArrayType,
-        elementArrayType: elementArrayType
+        elementArrayType: elementArrayType,
+        paintAttributes: [
+            {property: 'icon-color', type: 'Uint8'}
+        ]
     },
     collisionBox: {
         layoutVertexArrayType: createVertexArrayType([
@@ -358,7 +364,7 @@ class SymbolBucket {
             // the buffers for both tiles and clipped to tile boundaries at draw time.
             const addToBuffers = inside || mayOverlap;
             this.addSymbolInstance(anchor, line, shapedTextOrientations, shapedIcon, this.layers[0],
-                addToBuffers, this.symbolInstancesArray.length, this.collisionBoxArray, feature.index, feature.sourceLayerIndex, this.index,
+                addToBuffers, this.collisionBoxArray, feature.index, feature.sourceLayerIndex, this.index,
                 textBoxScale, textPadding, textAlongLine,
                 iconBoxScale, iconPadding, iconAlongLine, {zoom: this.zoom}, feature.properties);
         };
@@ -454,7 +460,7 @@ class SymbolBucket {
             this.sortedSymbolInstances = symbolInstancesStructTypeArray.sort((a, b) => {
                 const aRotated = (sin * a.anchorPointX + cos * a.anchorPointY) | 0;
                 const bRotated = (sin * b.anchorPointX + cos * b.anchorPointY) | 0;
-                return (aRotated - bRotated) || (b.index - a.index);
+                return (aRotated - bRotated) || (b.featureIndex - a.featureIndex);
             });
         }
 
@@ -505,14 +511,14 @@ class SymbolBucket {
             if (hasText) {
                 collisionTile.insertCollisionFeature(textCollisionFeature, glyphScale, layout['text-ignore-placement']);
                 if (glyphScale <= maxScale) {
-                    this.addSymbols(this.arrays.glyph, symbolInstance.glyphQuadStartIndex, symbolInstance.glyphQuadEndIndex, glyphScale, layout['text-keep-upright'], textAlongLine, collisionTile.angle, symbolInstance.writingModes);
+                    this.addSymbols(this.arrays.glyph, symbolInstance.glyphQuadStartIndex, symbolInstance.glyphQuadEndIndex, glyphScale, layout['text-keep-upright'], textAlongLine, collisionTile.angle, symbolInstance.writingModes, symbolInstance.featureIndex);
                 }
             }
 
             if (hasIcon) {
                 collisionTile.insertCollisionFeature(iconCollisionFeature, iconScale, layout['icon-ignore-placement']);
                 if (iconScale <= maxScale) {
-                    this.addSymbols(this.arrays.icon, symbolInstance.iconQuadStartIndex, symbolInstance.iconQuadEndIndex, iconScale, layout['icon-keep-upright'], iconAlongLine, collisionTile.angle);
+                    this.addSymbols(this.arrays.icon, symbolInstance.iconQuadStartIndex, symbolInstance.iconQuadEndIndex, iconScale, layout['icon-keep-upright'], iconAlongLine, collisionTile.angle, symbolInstance.featureIndex);
                 }
             }
 
@@ -521,7 +527,7 @@ class SymbolBucket {
         if (showCollisionBoxes) this.addToDebugBuffers(collisionTile);
     }
 
-    addSymbols(arrays, quadsStart, quadsEnd, scale, keepUpright, alongLine, placementAngle, writingModes) {
+    addSymbols(arrays, quadsStart, quadsEnd, scale, keepUpright, alongLine, placementAngle, writingModes, featureIndex) {
         const elementArray = arrays.elementArray;
         const layoutVertexArray = arrays.layoutVertexArray;
 
@@ -572,6 +578,10 @@ class SymbolBucket {
             segment.vertexLength += 4;
             segment.primitiveLength += 2;
         }
+
+        const feature = this.features.find(feature => feature.index === featureIndex);
+        const featureProperties = feature ? feature.properties : {};
+        arrays.populatePaintArrays(featureProperties);
     }
 
     addToDebugBuffers(collisionTile) {
@@ -623,7 +633,7 @@ class SymbolBucket {
         }
     }
 
-    addSymbolInstance(anchor, line, shapedTextOrientations, shapedIcon, layer, addToBuffers, index, collisionBoxArray, featureIndex, sourceLayerIndex, bucketIndex,
+    addSymbolInstance(anchor, line, shapedTextOrientations, shapedIcon, layer, addToBuffers, collisionBoxArray, featureIndex, sourceLayerIndex, bucketIndex,
         textBoxScale, textPadding, textAlongLine,
         iconBoxScale, iconPadding, iconAlongLine, globalProperties, featureProperties) {
 
@@ -679,7 +689,7 @@ class SymbolBucket {
             iconQuadEndIndex,
             anchor.x,
             anchor.y,
-            index,
+            featureIndex,
             writingModes
         );
     }
