@@ -46,9 +46,6 @@ class ProgramConfiguration {
         }
         self.PaintVertexArray = createVertexArrayType(self.attributes);
 
-        self._id = layer.id
-        self.layer = layer
-
         return self;
     }
 
