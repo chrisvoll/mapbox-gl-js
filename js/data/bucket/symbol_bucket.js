@@ -43,7 +43,8 @@ const symbolInterfaces = {
         layoutVertexArrayType: layoutVertexArrayType,
         elementArrayType: elementArrayType,
         paintAttributes: [
-            {property: 'text-color', type: 'Uint8'}
+            {property: 'text-color', type: 'Uint8'},
+            {property: 'text-halo-color', type: 'Uint8'}
         ]
     },
     icon: {

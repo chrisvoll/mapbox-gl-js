@@ -186,10 +186,12 @@ function drawTileSymbols(program, painter, layer, tile, buffers, isText, isSDF,
         if (haloWidth) { // Draw halo underneath the text.
             gl.uniform1f(program.u_gamma, (haloBlur * blurOffset / sdfPx + gamma) / gammaScale);
             gl.uniform1f(program.u_buffer, (haloOffset - haloWidth / fontScale) / sdfPx);
+            gl.uniform1f(program.u_is_halo, 1);
 
             drawSymbolElements(buffers, layer, gl, program);
         }
 
+        gl.uniform1f(program.u_is_halo, 0);
         gl.uniform1f(program.u_gamma, gamma / gammaScale);
         gl.uniform1f(program.u_buffer, (256 - 64) / 256);
     }
