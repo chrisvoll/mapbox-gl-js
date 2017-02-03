@@ -43,16 +43,16 @@ const symbolInterfaces = {
         layoutVertexArrayType: layoutVertexArrayType,
         elementArrayType: elementArrayType,
         paintAttributes: [
-            {property: 'text-color', type: 'Uint8'},
-            {property: 'text-halo-color', type: 'Uint8'}
+            {name: 'a_fill_color', property: 'text-color', type: 'Uint8'},
+            {name: 'a_halo_color', property: 'text-halo-color', type: 'Uint8'}
         ]
     },
     icon: {
         layoutVertexArrayType: layoutVertexArrayType,
         elementArrayType: elementArrayType,
         paintAttributes: [
-            {property: 'icon-color', type: 'Uint8'},
-            {property: 'icon-halo-color', type: 'Uint8'}
+            {name: 'a_fill_color', property: 'icon-color', type: 'Uint8'},
+            {name: 'a_halo_color', property: 'icon-halo-color', type: 'Uint8'}
         ]
     },
     collisionBox: {
